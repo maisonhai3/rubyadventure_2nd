@@ -5,7 +5,7 @@ using UnityEngine;
 /// This class handle Enemy behaviour. It make them walk back & forth as long as they aren't fixed, and then just idle
 /// without being able to interact with the player anymore once fixed.
 /// </summary>
-public class Enemy : MonoBehaviour
+public class EnemyClone : MonoBehaviour
 {
 	// ====== ENEMY MOVEMENT ========
 	public float speed;
@@ -36,10 +36,17 @@ public class Enemy : MonoBehaviour
 		remainingTimeToChange = timeToChange;
 
 		direction = horizontal ? Vector2.right : Vector2.down;
+		GetDirection();
+		// Direction is a vector2 has random direction
 
 		animator = GetComponent<Animator>();
 
 		audioSource = GetComponent<AudioSource>();
+	}
+
+	private void GetDirection()
+	{
+		direction = new Vector2(UnityEngine.Random.Range(-1, 2), UnityEngine.Random.Range(-1, 2));
 	}
 	
 	void Update()
@@ -52,7 +59,8 @@ public class Enemy : MonoBehaviour
 		if (remainingTimeToChange <= 0)
 		{
 			remainingTimeToChange += timeToChange;
-			direction *= -1; // Reverse direction.
+			// direction *= -1; // Reverse direction.
+			GetDirection();
 		}
 
 		animator.SetFloat("ForwardX", direction.x);
