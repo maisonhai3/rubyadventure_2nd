@@ -22,14 +22,14 @@ public class Enemy : MonoBehaviour
 
     // ================= SOUNDS =======================
     private AudioSource audioSource;
-    private Vector2 direction = Vector2.right;
+    public Vector2 direction = Vector2.right;
     private float remainingTimeToChange;
 
     private bool repaired;
 
     private Rigidbody2D rigidbody2d;
 
-    private void Start()
+    public void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         remainingTimeToChange = timeToChange;
@@ -51,14 +51,14 @@ public class Enemy : MonoBehaviour
         if (remainingTimeToChange <= 0)
         {
             remainingTimeToChange += timeToChange;
-            direction *= -1; // Reverse direction.
+            GetDirection();
         }
 
         animator.SetFloat("ForwardX", direction.x);
         animator.SetFloat("ForwardY", direction.y);
     }
 
-    private void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         rigidbody2d.MovePosition(rigidbody2d.position + direction * speed * Time.deltaTime);
     }
@@ -89,5 +89,10 @@ public class Enemy : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(hitSound);
         audioSource.PlayOneShot(fixedSound);
+    }
+
+    public virtual void GetDirection()
+    {
+        direction *= -1; // Reverse direction.
     }
 }
