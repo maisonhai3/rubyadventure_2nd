@@ -21,12 +21,12 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        var e = other.collider.GetComponent<Enemy>();
+        var enemy = other.collider.GetComponent<Enemy>();
+        if (enemy != null) 
+            enemy.Fix();
 
-        //if the object we touched wasn't an enemy, just destroy the projectile.
-        if (e != null) e.Fix();
-
-        Destroy(gameObject);
+        // Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     //called by the player controller after it instantiate a new projectile to launch it.

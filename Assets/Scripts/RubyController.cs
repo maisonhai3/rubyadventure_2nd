@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Manager;
+using UnityEngine;
 
 public class RubyController : MonoBehaviour
 {
@@ -76,15 +77,12 @@ public class RubyController : MonoBehaviour
 
         currentInput = move;
 
-
         // ============== ANIMATION =======================
-
         animator.SetFloat("Look X", lookDirection.x);
         animator.SetFloat("Look Y", lookDirection.y);
         animator.SetFloat("Speed", move.magnitude);
 
         // ============== PROJECTILE ======================
-
         if (Input.GetKeyDown(KeyCode.C))
             LaunchProjectile();
 
@@ -141,11 +139,19 @@ public class RubyController : MonoBehaviour
         transform.position = respawnPosition.position;
     }
 
-    // =============== PROJECTICLE ========================
+    // =============== PROJECTILE ========================
     private void LaunchProjectile()
     {
-        var projectileObject =
-            Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+        // var projectileObject =
+        //     Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+
+        var projectileObject = PoolingManager.Instance.GetPooledObject();
+        if (projectileObject != null)
+        {
+            projectileObject.transform.position = rigidbody2d.position + Vector2.up * 0.5f;
+            projectileObject.transform.rotation = Quaternion.identity;
+            projectileObject.SetActive(true);
+        }
 
         var projectile = projectileObject.GetComponent<Projectile>();
         projectile.Launch(lookDirection, 300);
@@ -155,7 +161,6 @@ public class RubyController : MonoBehaviour
     }
 
     // =============== SOUND ==========================
-
     //Allow to play a sound on the player sound source. used by Collectible
     public void PlaySound(AudioClip clip)
     {
